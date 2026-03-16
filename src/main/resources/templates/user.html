@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="ru"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Личный кабинет — Afisha</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Тема AFISHA -->
+    <link href="/scripts/style.css" rel="stylesheet">
+
+    <style>
+        .profile-header {
+            background: var(--color-base-200);
+            color: var(--color-base-content);
+            padding: 3rem 0;
+            text-align: center;
+            border-bottom: var(--border) solid var(--bs-border-color);
+        }
+
+        .profile-header h1 {
+            color: var(--color-primary);
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+
+        .profile-header p {
+            color: var(--color-base-content);
+            opacity: 0.9;
+            font-size: 1.1rem;
+            margin-bottom: 0;
+        }
+
+        .profile-header .badge {
+            background: var(--color-primary);
+            color: var(--color-primary-content);
+            padding: 0.25rem 0.75rem;
+            border-radius: var(--radius-selector);
+            font-weight: 600;
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+        }
+
+        .section-title {
+            color: var(--color-primary);
+            border-bottom: 2px solid var(--color-primary);
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+        }
+
+        .ticket-card {
+            background: var(--color-base-200);
+            border: var(--border) solid var(--bs-border-color);
+            border-radius: var(--bs-border-radius);
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            height: 100%;
+        }
+
+        .ticket-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+        }
+
+        .ticket-card img {
+            height: 180px;
+            object-fit: cover;
+            width: 100%;
+            border-top-left-radius: var(--bs-border-radius);
+            border-top-right-radius: var(--bs-border-radius);
+        }
+
+        .ticket-card .card-body {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 1.25rem;
+        }
+
+        .ticket-card .card-title {
+            color: var(--color-primary);
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            font-size: 1.1rem;
+        }
+
+        .ticket-card .card-text {
+            color: color-mix(in oklch, var(--color-base-content) 80%, transparent);
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .ticket-card .card-text i {
+            color: var(--color-primary);
+            opacity: 0.8;
+            margin-right: 0.5rem;
+        }
+
+        .ticket-card .fw-bold {
+            color: var(--color-success) !important;
+            font-size: 1rem;
+        }
+
+        .empty-state {
+            background: var(--color-base-200);
+            border: 2px dashed var(--bs-border-color);
+            border-radius: var(--bs-border-radius);
+            padding: 3rem 1rem;
+            text-align: center;
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            color: var(--color-neutral);
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .empty-state h4 {
+            color: var(--color-base-content);
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-state p {
+            color: color-mix(in oklch, var(--color-base-content) 70%, transparent);
+            margin-bottom: 1.5rem;
+        }
+
+        .stats-card {
+            background: var(--color-base-200);
+            border: var(--border) solid var(--bs-border-color);
+            border-radius: var(--bs-border-radius);
+            padding: 1.5rem;
+            text-align: center;
+            height: 100%;
+        }
+
+        .stats-card .number {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .stats-card .label {
+            color: var(--color-base-content);
+            opacity: 0.8;
+            font-size: 0.9rem;
+        }
+
+        .text-primary { color: var(--color-primary) !important; }
+        .text-success { color: var(--color-success) !important; }
+        .text-info { color: var(--color-info) !important; }
+        .text-warning { color: var(--color-warning) !important; }
+
+    </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container">
+        <a class="navbar-brand" href="/">AFISHA</a>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <div class="ms-auto d-flex align-items-center gap-3">
+
+                <form class="d-flex" action="/search" method="get">
+                    <input class="form-control search-input me-2" name="query" placeholder="Поиск">
+                    <button class="btn btn-outline-primary">Найти</button>
+                </form>
+
+                <a th:href="@{/login}"
+                   class="btn btn-outline-success"
+                   sec:authorize="!isAuthenticated()">Вход</a>
+
+                <div class="d-flex align-items-center gap-2"
+                     sec:authorize="isAuthenticated()">
+                    <div class="text-end">
+                        <div class="fw-semibold" sec:authentication="name"></div>
+                        <small sec:authorize="hasRole('ADMIN')" class="text-warning">Администратор</small>
+                        <small sec:authorize="!hasRole('ADMIN') and hasRole('USER')" class="text-secondary">Пользователь</small>
+                    </div>
+                    <form th:action="@{/logout}" method="post">
+                        <button class="btn btn-outline-danger btn-sm">Logout</button>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</nav>
+
+<div class="container my-4">
+
+    <!-- Заголовок профиля -->
+    <section class="profile-header">
+        <div class="container">
+            <h1 th:text="${user.name}">Имя пользователя</h1>
+            <p th:text="${user.email}">email@example.com</p>
+            <div class="badge">
+                <i class="bi bi-person-circle me-1"></i>Личный кабинет
+            </div>
+        </div>
+    </section>
+
+    <!-- Статистика -->
+    <div class="row mt-4 mb-4" th:if="${bookings != null and !bookings.isEmpty()}">
+        <div class="col-md-3">
+            <div class="stats-card">
+                <div class="number text-primary" th:text="${bookings.size()}">0</div>
+                <div class="label">Всего бронирований</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stats-card">
+                <div class="number text-success">
+                    <span th:text="${#numbers.formatDecimal(totalAmount, 1, 2)}">0</span> BYN
+                </div>
+                <div class="label">Общая сумма</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stats-card">
+                <div class="number text-info" th:text="${totalTickets}">0</div>
+                <div class="label">Всего билетов</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stats-card">
+                <div class="number text-warning"
+                     th:text="${#temporals.format(lastBookingDate, 'dd.MM.yyyy')}"
+                     th:if="${lastBookingDate != null}">-</div>
+                <div class="number text-warning" th:unless="${lastBookingDate != null}">-</div>
+                <div class="label">Последнее бронирование</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Мои бронирования -->
+    <h3 class="section-title">Мои забронированные концерты</h3>
+
+    <div class="row g-4 mt-2">
+        <!-- Перебор бронирований -->
+        <div class="col-md-4" th:each="booking : ${bookings}">
+            <div class="ticket-card">
+                <!-- Используем изображение из концерта или дефолтное -->
+                <img th:if="${booking.concert.imageUrl != null and booking.concert.imageUrl != ''}"
+                     th:src="${booking.concert.imageUrl}"
+                     class="card-img-top" alt="Concert Image">
+                <img th:unless="${booking.concert.imageUrl != null and booking.concert.imageUrl != ''}"
+                     src="https://www.baltana.com/files/wallpapers-11/Imagine-Dragons-HD-Wallpaper-30575.jpg"
+                     class="card-img-top" alt="Concert Image">
+                <div class="card-body">
+                    <div>
+                        <!-- Название концерта -->
+                        <h5 class="card-title" th:text="${booking.concert.title}">Название концерта</h5>
+
+                        <!-- Дата концерта -->
+                        <p class="card-text">
+                            <i class="bi bi-calendar"></i>
+                            <span th:text="${#temporals.format(booking.concert.concertDateTime, 'dd MMMM yyyy')}">12 февраля 2024</span>
+                        </p>
+
+                        <!-- Время концерта -->
+                        <p class="card-text">
+                            <i class="bi bi-clock"></i>
+                            <span th:text="${#temporals.format(booking.concert.concertDateTime, 'HH:mm')}">19:00</span>
+                        </p>
+
+                        <!-- Место проведения -->
+                        <p class="card-text">
+                            <i class="bi bi-geo-alt"></i>
+                            <span th:text="${booking.concert.venueName}">Место проведения</span>
+                            <small th:if="${booking.concert.city != null}"
+                                   th:text="' (' + ${booking.concert.city} + ')'">(Город)</small>
+                        </p>
+
+                        <!-- Исполнитель -->
+                        <p class="card-text" th:if="${booking.concert.artist != null}">
+                            <i class="bi bi-mic"></i>
+                            <span th:text="${booking.concert.artist}">Исполнитель</span>
+                        </p>
+
+                        <!-- Количество билетов -->
+                        <p class="card-text">
+                            <i class="bi bi-ticket-perforated"></i>
+                            Количество билетов:
+                            <strong th:text="${booking.ticketQuantity}">1</strong>
+                        </p>
+
+                        <!-- Номер бронирования -->
+                        <p class="card-text">
+                            <i class="bi bi-hash"></i>
+                            Номер брони:
+                            <small th:text="${booking.bookingNumber}">BOOK-123456</small>
+                        </p>
+
+                        <!-- Дата бронирования -->
+                        <p class="card-text">
+                            <i class="bi bi-calendar-check"></i>
+                            Забронировано:
+                            <small th:text="${#temporals.format(booking.bookingDate, 'dd.MM.yyyy HH:mm')}">01.01.2024 14:30</small>
+                        </p>
+
+                        <!-- Итоговая сумма -->
+                        <p class="card-text fw-bold">
+                            <i class="bi bi-cash-coin"></i>
+                            Итого:
+                            <span th:text="${#numbers.formatDecimal(booking.totalAmount, 1, 2)}">100.00</span> BYN
+                        </p>
+                    </div>
+
+                    <div class="d-flex justify-content-between mt-3">
+                        <!-- Ссылка на детали концерта -->
+                        <a th:href="@{'/concert/' + ${booking.concert.id}}"
+                           class="btn btn-sm btn-primary">
+                            <i class="bi bi-eye me-1"></i>Подробнее
+                        </a>
+
+                        <!-- Форма отмены бронирования -->
+                        <form th:action="@{'/user/bookings/' + ${booking.id} + '/cancel'}"
+                              method="post"
+                              th:onclick="return confirm('Вы уверены, что хотите отменить бронирование?')">
+                            <button type="submit" class="btn btn-sm btn-outline-danger">
+                                <i class="bi bi-x-circle me-1"></i>Отменить
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Если нет бронирований -->
+        <div class="col-12" th:if="${bookings == null or bookings.isEmpty()}">
+            <div class="empty-state">
+                <i class="bi bi-calendar-x"></i>
+                <h4>У вас пока нет забронированных концертов</h4>
+                <p>Начните с просмотра доступных событий и выберите то, что вам по душе!</p>
+                <a href="/" class="btn btn-primary">Посмотреть события</a>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Footer -->
+<footer class="py-4 mt-5">
+    <div class="container text-center">
+        <div class="mb-2">
+            <a href="/" class="me-3">Главная</a>
+            <a href="#" class="me-3">Контакты</a>
+            <a href="/user" class="me-3">Кабинет</a>
+            <a href="/profile" class="me-3">Настройки</a>
+        </div>
+        <small>© СП262 · Все события в одном месте</small>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    // Подтверждение отмены бронирования
+    document.addEventListener('DOMContentLoaded', function() {
+        const cancelForms = document.querySelectorAll('form[action*="/cancel"]');
+        cancelForms.forEach(form => {
+            form.addEventListener('submit', function(e) {
+                if (!confirm('Вы уверены, что хотите отменить бронирование?')) {
+                    e.preventDefault();
+                }
+            });
+        });
+    });
+</script>
+</body>
+</html>
