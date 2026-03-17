@@ -16,10 +16,13 @@ public class Artist {
     @Column(name = "name", nullable = false, length = 100)
     private String name;
 
+    private String bio;
+
     public Artist() {}
 
-    public Artist(String name) {
+    public Artist(String name, String bio) {
         this.name = name;
+        this.bio = bio;
     }
 
     public Long getId() {
@@ -36,5 +39,13 @@ public class Artist {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getBio() {
+        return bio;
+    }
+
+    public void setBio(String bio) {
+        this.bio = bio;
     }
 }
