@@ -1,277 +1,250 @@
 <!DOCTYPE html>
-<html lang="ru"
-      xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>AFISHA</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <!-- Bootstrap -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
-
-    <!-- Твоя тема -->
-    <link href="/scripts/style.css" rel="stylesheet">
-
-    <style>
-        /* ===== HERO ===== */
-        .hero {
-            position: relative;
-            height: 380px;
-            overflow: hidden;
-            border-radius: var(--bs-border-radius-lg);
-            margin-top: 1.5rem;
-        }
-
-        .hero-slide {
-            position: absolute;
-            inset: 0;
-            background-size: cover;
-            background-position: center;
-            opacity: 0;
-            transition: opacity 1s ease;
-            display: flex;
-            align-items: flex-end;
-            padding: 2rem;
-        }
-
-        .hero-slide.active {
-            opacity: 1;
-        }
-
-        .hero-slide::before {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(
-                    to top,
-                    rgba(0, 0, 0, .75),
-                    rgba(0, 0, 0, .15)
-            );
-        }
-
-        .hero-slide .overlay {
-            position: relative;
-            z-index: 2;
-            max-width: 600px;
-        }
-
-        /* ===== CARDS ===== */
-        .info-card {
-            height: 100%;
-            transition: transform .3s ease;
-            border-radius: var(--bs-border-radius) !important;
-            overflow: hidden;
-            border: var(--border) solid var(--bs-border-color);
-            background: var(--color-base-200);
-        }
-
-        .info-card:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-        }
-
-        .info-card img {
-            height: 200px;
-            width: 100%;
-            object-fit: cover;
-            border-top-left-radius: var(--bs-border-radius) !important;
-            border-top-right-radius: var(--bs-border-radius) !important;
-        }
-
-        .price {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: var(--color-success);
-        }
-
-        .concert-date {
-            color: var(--color-base-content);
-            opacity: 0.8;
-        }
-
-        .concert-venue {
-            color: var(--color-base-content);
-            opacity: 0.6;
-        }
-
-        .no-concerts {
-            text-align: center;
-            padding: 4rem 2rem;
-            color: var(--color-base-content);
-        }
-
-        .no-concerts i {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-            color: var(--color-base-300);
-        }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Player - Modern Design</title>
+    <link rel="stylesheet" href="/scripts/player.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
 
-<!-- NAVBAR -->
-<nav class="navbar navbar-expand-lg navbar-dark">
-    <div class="container">
-        <a class="navbar-brand" th:href="@{/}">AFISHA</a>
+<div class="layout">
 
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <div class="ms-auto d-flex align-items-center gap-3">
-
-                <a th:href="@{/login}"
-                   class="btn btn-outline-success"
-                   sec:authorize="!isAuthenticated()">Вход</a>
-
-                <div class="d-flex align-items-center gap-2"
-                     sec:authorize="isAuthenticated()">
-                    <div class="text-end">
-                        <div class="fw-semibold" sec:authentication="name"></div>
-                        <small sec:authorize="hasRole('ADMIN')" class="text-warning">Администратор</small>
-                        <small sec:authorize="!hasRole('ADMIN') and hasRole('USER')" class="text-secondary">Пользователь</small>
-                    </div>
-                    <form th:action="@{/logout}" method="post">
-                        <button class="btn btn-outline-danger btn-sm">Logout</button>
-                    </form>
-                </div>
-
-            </div>
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="logo">
+            <i class="fas fa-headphones-alt"></i>
+            <span>Music Player</span>
         </div>
-    </div>
-</nav>
 
-<!-- HERO -->
-<div class="container" th:if="${not #lists.isEmpty(concerts)}">
-    <section class="hero" id="heroSection">Баннер</section>
-</div>
+        <div class="menu-section">
+            <a class="menu-item active">
+                <i class="fas fa-home"></i>
+                <span>Home</span>
+            </a>
+            <a class="menu-item">
+                <i class="fas fa-compass"></i>
+                <span>Discover</span>
+            </a>
+            <a class="menu-item">
+                <i class="fas fa-satellite-dish"></i>
+                <span>Radio</span>
+            </a>
+        </div>
 
-<!-- EVENTS -->
-<div class="container my-5 mx-20">
+        <div class="menu-title">Your Library</div>
+        <div class="menu-section">
+            <a class="menu-item">
+                <i class="fas fa-star"></i>
+                <span>Made For You</span>
+            </a>
+            <a class="menu-item">
+                <i class="fas fa-clock"></i>
+                <span>Recently Played</span>
+            </a>
+            <a class="menu-item">
+                <i class="fas fa-heart"></i>
+                <span>Liked Songs</span>
+            </a>
+            <a class="menu-item" href="/albums">
+                <i class="fas fa-album"></i>
+                <span>Albums</span>
+            </a>
+            <a class="menu-item" href="/artists">
+                <i class="fas fa-microphone-alt"></i>
+                <span>Artists</span>
+            </a>
+            <a class="menu-item">
+                <i class="fas fa-podcast"></i>
+                <span>Podcasts</span>
+            </a>
+        </div>
 
-    <!-- Заголовок с количеством концертов -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="text-primary">Предстоящие мероприятия</h1>
-        <a th:href="@{'/schedule'}"
-           class="btn btn-sm btn-primary">
-            Расписание
+        <div class="menu-title">Playlists</div>
+        <div id="playlistBlock" class="menu-section playlists">
+            <a class="menu-item playlist-item">
+                <i class="fas fa-music"></i>
+                <span>Chill Vibes</span>
+            </a>
+            <a class="menu-item playlist-item">
+                <i class="fas fa-music"></i>
+                <span>Workout Mix</span>
+            </a>
+            <a class="menu-item playlist-item">
+                <i class="fas fa-music"></i>
+                <span>Study Session</span>
+            </a>
+        </div>
+
+        <a class="menu-item new-playlist">
+            <i class="fas fa-plus-circle"></i>
+            <span>New Playlist</span>
         </a>
-    </div>
+    </aside>
 
-    <div th:if="${#lists.isEmpty(concerts)}" class="no-concerts">
-        <i class="bi bi-calendar-x"></i>
-        <h4 class="bs-body-color">Нет предстоящих концертов</h4>
-        <p class="text-primary">Скоро здесь появятся новые мероприятия</p>
-    </div>
+    <!-- MAIN CONTENT -->
+    <main class="main">
+        <div class="header">
+            <div class="search-wrapper">
+                <i class="fas fa-search"></i>
+                <input type="text" class="search" placeholder="What do you want to listen to?">
+            </div>
+            <div class="user-menu">
+                <i class="fas fa-bell"></i>
+                <div class="user-profile">
+                    <img src="/img/user-avatar.png" alt="User" class="user-avatar">
+                    <span>User</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+            </div>
+        </div>
 
-    <div class="row g-4" th:if="${not #lists.isEmpty(concerts)}">
+        <div class="greeting">
+            <h1>Good evening</h1>
+        </div>
 
-        <!-- Карточка концерта (динамическая) -->
-        <div class="col-md-4" th:each="concert : ${concerts}">
-            <div class="card info-card shadow-sm">
-                <img th:src="${concert.imageUrl != null ? concert.imageUrl : 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80'}"
-                     class="card-img-top"
-                     th:alt="${concert.title}">
-                <div class="card-body">
-                    <h5 class="card-title" th:text="${concert.title}">Название концерта</h5>
-
-                    <!-- Исполнитель -->
-                    <p class="text-primary mb-1" th:if="${concert.artist != null}">
-                        <i class="bi bi-person"></i>
-                        <span th:text="${concert.artist}">Исполнитель</span>
-                    </p>
-
-                    <!-- Дата -->
-                    <p class="concert-date mb-1" th:if="${concert.concertDateTime != null}">
-                        <i class="bi bi-calendar"></i>
-                        <span th:text="${#temporals.format(concert.concertDateTime, 'd MMMM yyyy')} + ', ' + ${#temporals.format(concert.concertDateTime, 'HH:mm')}">дата</span>
-                    </p>
-
-                    <!-- Место -->
-                    <p class="concert-venue mb-3" th:if="${concert.venueName != null}">
-                        <i class="bi bi-geo-alt"></i>
-                        <span th:text="${concert.venueName}">место</span>
-                        <span th:if="${concert.city != null}" th:text="', ' + ${concert.city}"></span>
-                    </p>
-
-                    <div class="d-flex justify-content-between align-items-center">
-                        <!-- Цена -->
-                        <span class="price" th:if="${concert.price != null}">
-                            <span th:text="'от ' + ${concert.price} + ' ' + ${concert.currency}">от 50 BYN</span>
-                        </span>
-
-                        <!-- Ссылка "Подробнее" -->
-                        <a th:href="@{'/concert/' + ${concert.id}}"
-                           class="btn btn-sm btn-primary">
-                            Подробнее
-                        </a>
-                    </div>
-
-                    <!-- Дополнительные индикаторы -->
-                    <div class="mt-2 d-flex gap-2">
-
-                        <!-- Мало билетов -->
-                        <span th:if="${concert.availableTickets != null and concert.availableTickets < 10}"
-                              class="badge bg-danger">
-                            <i class="bi bi-exclamation-triangle me-1"></i>Мало билетов
-                        </span>
+        <div class="featured-card">
+            <div class="artist-card">
+                <img class="artist-img" src="/img/daft.png" alt="Daft Punk">
+                <div class="artist-info">
+                    <span class="verified">Verified Artist</span>
+                    <h1 class="artist-name">Daft Punk</h1>
+                    <p class="listeners"><i class="fas fa-users"></i> 6.8m monthly listeners</p>
+                    <div class="artist-actions">
+                        <button class="play-btn"><i class="fas fa-play"></i></button>
+                        <button class="follow-btn">Follow</button>
+                        <button class="more-btn"><i class="fas fa-ellipsis-h"></i></button>
                     </div>
                 </div>
             </div>
         </div>
 
+        <div class="section-header">
+            <h2>Popular tracks</h2>
+            <a href="#" class="see-all">See all</a>
+        </div>
+
+        <div id="trackList" class="track-list"></div>
+
+        <div class="recently-played">
+            <div class="section-header">
+                <h2>Recently played</h2>
+                <a href="#" class="see-all">See all</a>
+            </div>
+            <div class="recent-grid">
+                <div class="recent-item">
+                    <img src="/img/cover.png" alt="Album">
+                    <div class="recent-info">
+                        <div class="recent-title">Random Access Memories</div>
+                        <div class="recent-subtitle">Album • Daft Punk</div>
+                    </div>
+                </div>
+                <div class="recent-item">
+                    <img src="/img/cover.png" alt="Album">
+                    <div class="recent-info">
+                        <div class="recent-title">Discovery</div>
+                        <div class="recent-subtitle">Album • Daft Punk</div>
+                    </div>
+                </div>
+                <div class="recent-item">
+                    <img src="/img/cover.png" alt="Album">
+                    <div class="recent-info">
+                        <div class="recent-title">Homework</div>
+                        <div class="recent-subtitle">Album • Daft Punk</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- LYRICS RIGHT PANEL -->
+    <aside class="lyrics-panel">
+        <div class="lyrics-header">
+            <h3>Lyrics</h3>
+            <button class="close-lyrics"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="lyrics-content">
+            <div class="lyrics-card">
+                <div class="now-playing-info">
+                    <img src="/img/cover.png" alt="Now playing" class="now-playing-img">
+                    <div>
+                        <div class="now-playing-title">Technologic</div>
+                        <div class="now-playing-artist">Daft Punk</div>
+                    </div>
+                </div>
+                <div class="lyrics-text">
+                    <h4>[Verse 1]</h4>
+                    <p>Buy it, use it, break it, fix it<br>
+                        Trash it, change it, mail - upgrade it<br>
+                        Charge it, point it, zoom it, press it<br>
+                        Snap it, work it, quick - erase it</p>
+
+                    <h4>[Chorus]</h4>
+                    <p>Technologic<br>
+                        Technologic<br>
+                        Technologic<br>
+                        Technologic</p>
+
+                    <h4>[Verse 2]</h4>
+                    <p>Write it, cut it, paste it, save it<br>
+                        Load it, check it, quick - rewrite it<br>
+                        Plug it, play it, burn it, rip it<br>
+                        Drag and drop it, zip - unzip it</p>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+</div>
+
+<!-- BOTTOM PLAYER -->
+<div class="bottom-player">
+    <div class="player-left">
+        <img id="bp-img" src="/img/cover.png" alt="Now playing" class="player-cover">
+        <div class="player-track-info">
+            <div id="bp-title" class="player-track-title">Technologic</div>
+            <div id="bp-artist" class="player-track-artist">Daft Punk</div>
+        </div>
+        <button class="like-btn"><i class="far fa-heart"></i></button>
+    </div>
+
+    <div class="player-center">
+        <div class="player-controls">
+            <button class="control-btn shuffle"><i class="fas fa-random"></i></button>
+            <button class="control-btn prev"><i class="fas fa-step-backward"></i></button>
+            <button class="control-btn play-pause" id="playPauseBtn"><i class="fas fa-play"></i></button>
+            <button class="control-btn next"><i class="fas fa-step-forward"></i></button>
+            <button class="control-btn repeat"><i class="fas fa-repeat"></i></button>
+        </div>
+
+        <div class="progress-container">
+            <span class="time current" id="currentTime">0:00</span>
+            <div class="progress-bar-wrapper">
+                <input type="range" id="progress" class="progress-bar" value="0" min="0" max="100" step="0.1">
+                <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+            </div>
+            <span class="time total" id="totalTime">0:00</span>
+        </div>
+    </div>
+
+    <div class="player-right">
+        <button class="control-btn queue"><i class="fas fa-list-ul"></i></button>
+        <button class="control-btn device"><i class="fas fa-desktop"></i></button>
+        <button class="control-btn volume-btn"><i class="fas fa-volume-up"></i></button>
+        <div class="volume-wrapper">
+            <input type="range" id="volume" class="volume-bar" min="0" max="1" step="0.01" value="0.7">
+            <div class="volume-fill" id="volumeFill" style="width: 70%"></div>
+        </div>
+        <button class="control-btn fullscreen"><i class="fas fa-expand"></i></button>
     </div>
 </div>
 
-<!-- FOOTER -->
-<footer class="py-4 mt-5">
-    <div class="container text-center">
-        <div class="mb-2">
-            <a th:href="@{/}" class="me-3">Главная</a>
-            <a href="#" class="me-3">Контакты</a>
-            <a href="/user">Кабинет</a>
-        </div>
-        <small>© СП262 · Все события в одном месте</small>
-    </div>
-</footer>
+<audio id="audio" style="display: none;">
+    <source id="audioSource" src="" type="audio/mpeg">
+</audio>
 
-<!-- SCRIPTS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
-
-<script>
-    const hero = document.querySelector('.hero');
-    const cards = document.querySelectorAll('.info-card');
-    const slides = [];
-
-    cards.forEach((card, i) => {
-        const img = card.querySelector('img')?.src;
-        const title = card.querySelector('.card-title')?.textContent;
-        const link = card.querySelector('.btn-primary')?.href;
-
-        if (!img) return;
-
-        const slide = document.createElement('div');
-        slide.className = 'hero-slide' + (i === 0 ? ' active' : '');
-        slide.style.backgroundImage = `url('${img}')`;
-
-        slide.innerHTML = `
-            <div class="overlay">
-                <h2 class="fw-bold">${title}</h2>
-                <a href="${link}" class="btn btn-primary mt-3">Подробнее</a>
-            </div>
-        `;
-
-        hero.appendChild(slide);
-        slides.push(slide);
-    });
-
-    let current = 0;
-    setInterval(() => {
-        slides[current].classList.remove('active');
-        current = (current + 1) % slides.length;
-        slides[current].classList.add('active');
-    }, 5000);
-</script>
-
+<script src="/scripts/player.js"></script>
 </body>
 </html>

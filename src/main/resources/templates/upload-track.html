@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Upload Track</title>
+</head>
+<body>
+
+<h1>Upload new track</h1>
+
+<form action="/admin/upload-track" method="post" enctype="multipart/form-data">
+    <label>Title:</label>
+    <input type="text" name="title" required><br><br>
+
+    <label>Artist ID:</label>
+    <input type="number" name="artistId" required><br><br>
+
+    <label>Album ID (optional):</label>
+    <input type="number" name="albumId"><br><br>
+
+    <label>Audio file:</label>
+    <input type="file" name="file" accept="audio/*" required><br><br>
+
+    <button type="submit">Upload</button>
+</form>
+
+</body>
+</html>

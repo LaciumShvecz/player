@@ -14,3 +14,17 @@ async function showUserNameOnNavbar() {
                  with roles: 
                  ${currentUser.roles.map(role => role.name.substring(5).concat(" ")).toString().replaceAll(",", "")}`;
 }
+
+function playTrack(button) {
+
+    const url = button.getAttribute("data-url");
+
+    const player = document.getElementById("audioPlayer");
+
+    player.src = url;
+
+    player.play();
+
+    document.getElementById("nowPlaying").innerText =
+        button.parentElement.innerText;
+}

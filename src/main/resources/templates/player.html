@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Music Player</title>
+    <link rel="stylesheet" href="/css/player.css">
+</head>
+<body>
+
+<div class="layout">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="menu-section">
+            <a class="menu-item active">Home</a>
+            <a class="menu-item">Discover</a>
+            <a class="menu-item">Radio</a>
+        </div>
+
+        <div class="menu-title">Your Library</div>
+        <div class="menu-section">
+            <a class="menu-item">Made For You</a>
+            <a class="menu-item">Recently Played</a>
+            <a class="menu-item">Liked Songs</a>
+            <a class="menu-item" href="/albums">Albums</a>
+            <a class="menu-item" href="/artists">Artists</a>
+            <a class="menu-item">Podcasts</a>
+        </div>
+
+        <div class="menu-title">Playlists</div>
+        <div id="playlistBlock" class="menu-section"></div>
+
+        <a class="menu-item new-playlist">+ New Playlist</a>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main">
+
+        <div class="header">
+            <input type="text" class="search" placeholder="Search for songs, artists...">
+            <div class="user">User ▼</div>
+        </div>
+
+        <div class="artist-card">
+            <img class="artist-img" src="/img/daft.png">
+            <div class="artist-info">
+                <h1 class="artist-name">Daft Punk</h1>
+                <p class="listeners">6.8m listeners</p>
+                <button class="play-btn">▶</button>
+            </div>
+        </div>
+
+        <div id="trackList" class="track-list"></div>
+
+    </main>
+
+    <!-- LYRICS RIGHT PANEL -->
+    <aside class="lyrics">
+        <h3>[Verse 1]</h3>
+        <p>It might not be the right time<br>But there's something about us…</p>
+
+        <h3>[Verse 2]</h3>
+        <p>I might not be the right one…</p>
+
+        <h3>[Refrain]</h3>
+        <p>I need you more than anything…</p>
+    </aside>
+
+</div>
+
+<!-- BOTTOM PLAYER -->
+<div class="bottom-player">
+    <div class="bp-left">
+        <img id="bp-img" src="/img/cover.png">
+        <div>
+            <div id="bp-title">Technologic</div>
+            <div id="bp-artist">Daft Punk</div>
+        </div>
+    </div>
+
+    <div class="bp-center">
+        <audio id="audio" style="width:100%;">
+            <source id="audioSource" src="" type="audio/mpeg">
+        </audio>
+        <input type="range" id="progress" value="0">
+    </div>
+
+    <div class="bp-right">
+        <input type="range" id="volume" min="0" max="1" step="0.01">
+    </div>
+</div>
+
+<script src="/js/player.js"></script>
+</body>
+</html>

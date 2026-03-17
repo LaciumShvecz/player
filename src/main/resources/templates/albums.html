@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Albums</title>
+</head>
+<body>
+
+<h1>Albums</h1>
+<a href="/player">Back to Player</a>
+
+<div id="albums"></div>
+
+<script>
+    fetch("/api/albums")
+        .then(r => r.json())
+        .then(data => {
+            const block = document.getElementById("albums");
+            data.forEach(a => {
+                block.innerHTML += `<p>${a.title} — ${a.artist.name}</p>`;
+            });
+        });
+</script>
+
+</body>
+</html>
